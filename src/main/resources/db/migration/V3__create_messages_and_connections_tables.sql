@@ -4,7 +4,7 @@ create table  messages (
     room_id UUID not null references rooms(id) on delete cascade ,
     user_id UUID not null references users(id) on delete cascade ,
     content text not null ,
-    sent_at timestamp not null default NOW();
+    sent_at timestamp not null default NOW()
 );
 
 create index idx_messages_room on messages(room_id);
