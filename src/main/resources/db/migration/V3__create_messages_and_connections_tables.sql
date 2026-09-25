@@ -16,7 +16,7 @@ create  table connections(
     session_id varchar(255) not null unique ,
     room_id UUID not null references rooms(id) on delete cascade ,
     user_id UUID not null references users(id) on delete set null ,
-    connected_at timestamp not null  default NOWT()
+    connected_at timestamp not null  default NOW()
 );
 
 create index idx_connections_session on connections(session_id);
