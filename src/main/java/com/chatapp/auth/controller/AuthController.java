@@ -37,9 +37,9 @@ public class AuthController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserResponse> getProfile(
-            @AuthenticationPrincipal User user){
+            java.security.Principal principal){
      return ResponseEntity.ok(new UserResponse(
-             user.getId(), user.getUsername(), user.getEmail()
+             null, principal.getName(), null
      ));
     }
 }

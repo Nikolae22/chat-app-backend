@@ -38,6 +38,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/auth/register","/api/auth/login").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated())
+                .exceptionHandling(e -> e.authenticationEntryPoint((request, response, authException) ->
+                        response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

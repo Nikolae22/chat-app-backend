@@ -29,7 +29,7 @@ public class AuthService {
             throw new UserAlreadyExistsException("Email is already in use");
         }
 
-        if (userRepository.existsByEmail(request.username())){
+        if (userRepository.existsByUsername(request.username())){
             throw new UserAlreadyExistsException("Username is already in use");
         }
 

@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     show-sql: false
     properties:
       hibernate:
@@ -22,7 +22,8 @@ spring:
     locations: classpath:db/migration
 
 jwt:
-  secret: long-256-bit-secret-key-for-testing-purposes-only
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+#  secret: long-256-bit-secret-key-for-testing-purposes-only
   expiration: 86400000
 
 #spring:

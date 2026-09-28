@@ -20,7 +20,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expiration}")
-    private String expiration;
+    private long expiration;
 
 
     public String generateToken(User user){
@@ -59,8 +59,14 @@ public class JwtService {
     }
 
     private SecretKey getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(secret);
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (Exception e) {
+            // try hex decoding (tests use a hex string)
+            byte[] keyBytes = java.util.HexFormat.of().parseHex(secret);
+            return Keys.hmacShaKeyFor(keyBytes);
+        }
     }
 
 

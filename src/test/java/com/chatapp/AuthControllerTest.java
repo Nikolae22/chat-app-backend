@@ -3,6 +3,7 @@ package com.chatapp;
 import com.chatapp.auth.dto.LoginRequest;
 import com.chatapp.auth.dto.RegisterRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,8 +30,8 @@ public class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+
+    private final ObjectMapper objectMapper=new ObjectMapper();
 
     @Test
     @DisplayName("POST /api/auth/register ->201 with valid body")
@@ -53,7 +55,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").isNotEmpty());
     }
 
@@ -85,7 +87,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("POST /api/auth/login -> 200 when valid credentials")
     void login_valid_credentials() throws  Exception{
-        RegisterRequest user=new RegisterRequest("", "el@gmail.com","password123");
+        RegisterRequest user=new RegisterRequest("El", "el@gmail.com","password123");
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +119,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/login -> 400 when wrong password")
+    @DisplayName("POST /api/auth/login -> 401 when wrong password")
     void login_invalid_wrong_password() throws  Exception{
         RegisterRequest user=new RegisterRequest("El", "el@gmail.com","password123");
 
@@ -129,7 +131,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errors").isNotEmpty());
     }
 
@@ -154,7 +156,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("GET /api/auth/profile -> 401 without the token")
     void  get_profile_without_token() throws Exception{
-        mockMvc.perform(get("/api/aith/profile"))
+        mockMvc.perform(get("/api/auth/profile"))
                 .andExpect(status().isUnauthorized());
     }
 

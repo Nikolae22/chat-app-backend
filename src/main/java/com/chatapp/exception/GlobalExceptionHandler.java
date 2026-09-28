@@ -24,18 +24,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(
             InvalidCredentialsException ex){
+        Map<String,String> errors = new HashMap<>();
+        errors.put("credentials", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse(401,ex.getMessage(),null));
+                .body(new ErrorResponse(401,ex.getMessage(),errors));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex){
-        Map<String, Object> errors=new HashMap<>();
+        Map<String, String> errors=new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
             errors.put(fieldError.getField(),fieldError.getDefaultMessage());
         });
-        return ResponseEntity.status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400,ex.getMessage(),errors));
     }
 
