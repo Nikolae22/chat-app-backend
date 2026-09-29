@@ -2,10 +2,13 @@ package com.chatapp.exception;
 
 import com.chatapp.auth.exceptions.InvalidCredentialsException;
 import com.chatapp.auth.exceptions.UserAlreadyExistsException;
+import com.chatapp.rooms.exceptions.RoomAlreadyExistsException;
+import com.chatapp.rooms.exceptions.RoomNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -46,5 +49,22 @@ public class GlobalExceptionHandler {
             Exception ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(500,ex.getMessage(),null));
+    }
+
+    @ExceptionHandler(RoomAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleRoomAlreadyExistsException(RoomAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        409,ex.getMessage(),null
+                ));
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRoomNotFoundException(RoomNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        404,ex.getMessage(),null
+                ));
     }
 }
